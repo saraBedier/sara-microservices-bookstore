@@ -1,0 +1,12 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: ${ORDER_DB_URL:jdbc:h2:mem:orderdb}
+    username: ${ORDER_DB_USERNAME:sa}
+    password: ${ORDER_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

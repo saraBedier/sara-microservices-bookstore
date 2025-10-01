@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: ${BOOK_DB_URL:jdbc:h2:mem:bookdb}
+    username: ${BOOK_DB_USERNAME:sa}
+    password: ${BOOK_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

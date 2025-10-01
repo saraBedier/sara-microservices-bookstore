@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: book-service
+          uri: ${BOOK_SERVICE_URL}
+          predicates:
+            - Path=/books/**
+
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL}
+          predicates:
+            - Path=/orders/**
+
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL}
+          predicates:
+            - Path=/notifications/**

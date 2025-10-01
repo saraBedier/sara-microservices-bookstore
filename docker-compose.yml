@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  book-service:
+    build: ./book-service
+    image: sara/book-service
+    ports:
+      - "8082:8082"
+
+  notification-service:
+    build: ./notification-service
+    image: sara/notification-service
+    ports:
+      - "8084:8084"
+
+  order-service:
+    build: ./order-service
+    image: sara/order-service
+    ports:
+      - "8083:8083"
+    environment:
+      BOOK_SERVICE_URL: http://book-service:8082
+      NOTIFICATION_SERVICE_URL: http://notification-service:8084
+    depends_on:
+      - book-service
+      - notification-service
+
+  gateway-service:
+    build: ./gateway-service
+    image: sara/gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - book-service
+      - order-service
+      - notification-service

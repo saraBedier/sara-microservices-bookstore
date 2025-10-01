@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: ${NOTIFICATION_DB_URL:jdbc:h2:mem:notificationdb}
+    username: ${NOTIFICATION_DB_USERNAME:sa}
+    password: ${NOTIFICATION_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
