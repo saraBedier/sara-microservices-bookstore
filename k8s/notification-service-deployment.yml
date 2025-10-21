@@ -14,27 +14,27 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: sara/notification-service:latest
+          image: sarabedier/notification-service:latest
           ports:
-            - containerPort: 8084
+            - containerPort: 8083
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
-            - name: BOOK_SERVICE_URL
+            - name: NOTIFICATION_DB_URL
               valueFrom:
                 configMapKeyRef:
                   name: app-config
-                  key: BOOK_SERVICE_URL
-            - name: ORDER_SERVICE_URL
+                  key: NOTIFICATION_DB_URL
+            - name: NOTIFICATION_DB_USERNAME
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: ORDER_SERVICE_URL
-            - name: NOTIFICATION_SERVICE_URL
+                secretKeyRef:
+                  name: app-secrets
+                  key: NOTIFICATION_DB_USERNAME
+            - name: NOTIFICATION_DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: NOTIFICATION_SERVICE_URL
+                secretKeyRef:
+                  name: app-secrets
+                  key: NOTIFICATION_DB_PASSWORD
 ---
 apiVersion: v1
 kind: Service
@@ -45,5 +45,6 @@ spec:
     app: notification-service
   ports:
     - protocol: TCP
-      port: 8084
-      targetPort: 8084
+      port: 8083
+      targetPort: 8083
+  type: ClusterIP

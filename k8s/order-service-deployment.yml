@@ -14,27 +14,27 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: sara/order-service:latest
+          image: sarabedier/order-service:latest
           ports:
-            - containerPort: 8083
+            - containerPort: 8082
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
-            - name: BOOK_SERVICE_URL
+            - name: ORDER_DB_URL
               valueFrom:
                 configMapKeyRef:
                   name: app-config
-                  key: BOOK_SERVICE_URL
-            - name: ORDER_SERVICE_URL
+                  key: ORDER_DB_URL
+            - name: ORDER_DB_USERNAME
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: ORDER_SERVICE_URL
-            - name: NOTIFICATION_SERVICE_URL
+                secretKeyRef:
+                  name: app-secrets
+                  key: ORDER_DB_USERNAME
+            - name: ORDER_DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: NOTIFICATION_SERVICE_URL
+                secretKeyRef:
+                  name: app-secrets
+                  key: ORDER_DB_PASSWORD
 ---
 apiVersion: v1
 kind: Service
@@ -45,5 +45,6 @@ spec:
     app: order-service
   ports:
     - protocol: TCP
-      port: 8083
-      targetPort: 8083
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP

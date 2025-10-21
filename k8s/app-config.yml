@@ -6,3 +6,8 @@ data:
   BOOK_SERVICE_URL: http://book-service:8081
   ORDER_SERVICE_URL: http://order-service:8082
   NOTIFICATION_SERVICE_URL: http://notification-service:8083
+
+
+  BOOK_DB_URL: jdbc:h2:mem:bookdb
+  ORDER_DB_URL: jdbc:h2:mem:orderdb
+  NOTIFICATION_DB_URL: jdbc:h2:mem:notificationdb
