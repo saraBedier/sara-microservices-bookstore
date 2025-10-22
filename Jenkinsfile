@@ -23,12 +23,18 @@ pipeline {
             }
         }
 
-        stage('Build Services') {
-            steps {
-                echo "Building all microservices with Maven..."
-                sh 'mvn clean package -DskipTests'
-            }
-        }
+       stage('Build Services') {
+    steps {
+        echo 'Building all microservices...'
+        sh '''
+            mvn -f book-service/pom.xml clean package -DskipTests
+            mvn -f user-service/pom.xml clean package -DskipTests
+            mvn -f gateway-service/pom.xml clean package -DskipTests
+            mvn -f notification-service/pom.xml clean package -DskipTests
+            mvn -f order-service/pom.xml clean package -DskipTests
+        '''
+    }
+}
 
         stage('Build & Push Docker Images') {
             steps {
