@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USER = 'sarabedier'     // your Docker Hub username
+        DOCKER_HUB_USER = 'sarabedier'     // your Docker Hub username 
         DOCKER_CREDENTIALS = 'dockerhub'   // Jenkins credentials ID for Docker Hub
         GITHUB_URL = 'https://github.com/saraBedier/sara-microservices-bookstore.git'
         K8S_DIR = 'k8s'
