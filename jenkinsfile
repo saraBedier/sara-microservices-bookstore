@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_USER = 'sarabedier'     // your Docker Hub username
+        DOCKER_CREDENTIALS = 'dockerhub'   // Jenkins credentials ID for Docker Hub
+        GITHUB_URL = 'https://github.com/saraBedier/sara-microservices-bookstore.git'
+        K8S_DIR = 'k8s'
+        VERSION = "v${env.BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo "Cloning repository..."
+                git branch: 'main', url: "${GITHUB_URL}"
+            }
+        }
+
+        stage('Build Services') {
+            steps {
+                echo "Building all microservices with Maven..."
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Build & Push Docker Images') {
+            steps {
+                script {
+                    def services = ['gateway-service', 'book-service', 'order-service', 'notification-service', 'user-service']
+
+                    services.each { service ->
+                        dir("${service}") {
+                            echo "Building Docker image for ${service}..."
+                            sh "docker build -t ${DOCKER_HUB_USER}/${service}:${VERSION} ."
+                            sh "docker tag ${DOCKER_HUB_USER}/${service}:${VERSION} ${DOCKER_HUB_USER}/${service}:latest"
+
+                            echo "Pushing ${service} to Docker Hub..."
+                            withDockerRegistry([ credentialsId: "${DOCKER_CREDENTIALS}", url: "" ]) {
+                                sh "docker push ${DOCKER_HUB_USER}/${service}:${VERSION}"
+                                sh "docker push ${DOCKER_HUB_USER}/${service}:latest"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+       stage('Deploy to Kubernetes') {
+    	when {
+        	expression {
+            // Run deploy only if kubectl cluster is available
+            sh(returnStatus: true, script: 'kubectl cluster-info > /dev/null 2>&1') == 0
+       		 }
+    	}	
+    	steps {
+        	echo "Deploying all microservices to Kubernetes..."
+        	sh "kubectl apply -f ${K8S_DIR}/"
+    	}
+	}
+
+    }
+
+    post {
+        success {
+            echo "✅ Deployment successful! Version: ${VERSION}"
+        }
+        failure {
+            echo "❌ Deployment failed. Please check the logs."
+        }
+    }
+}
