@@ -16,12 +16,12 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+   /*     stage('Checkout') {
             steps {
                 echo "Cloning repository..."
                 git branch: 'main', url: "${GITHUB_URL}"
             }
-        }
+        }*/
 
        stage('Build Services') {
     steps {
